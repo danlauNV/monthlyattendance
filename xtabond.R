@@ -68,7 +68,7 @@ fn.predict.one.month <- function(looping_month_predicting) {
 
 
 # write.csv(, na= "", )
-######################################################################################
+#####################################################START #################################
 
 library("dynlm")
 library(data.table)
@@ -149,8 +149,10 @@ ts.projection$predict <-  as.numeric(NA) #as.numeric(ts.lagged$predict)
 m<- NULL
 m <- model.matrix(~ L.rate + L2.rate + L3.rate + L4.rate  +  factor(month) + factor(yr) + year + yearsq  + rankPres , ts.lagged )[,]
 m <- cbind(m[,-1],m[,1]) # in order to get the intercept  to last col to line up with t from stata 
+###### MANUAL DATA ENTRY #####
 m <- m[,-17] # in order to get ride of the yrr value that stata did not use, and is thus not in t
 #df_obsns_to_predict <-  ts.lagged[vec_obsns_to_predict,]
+####### continue #######
 df.m      <- data.frame(m) 
 df.m <- cbind(rownumber_df.m = rownames(df.m), df.m)
 

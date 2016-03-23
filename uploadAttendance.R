@@ -27,11 +27,11 @@ library("intervals")
 
 
 #################################3
-MONTHSTOFORECAST <- 5
+MONTHSTOFORECAST <- 4
 ARTIFICIALYEAR <- 100 #arificial year minus 1, so actually will start at 101. Change if we do daily forecasts
 ###############
 
-attdbyschoolraw<- read_excel("j://attendance_timeseries//5 year look by month 3.xlsx", sheet = 2)
+attdbyschoolraw<- read_excel("j:/attendance_timeseries/5 year look by month_toFeb.xlsx", sheet = 2)
 attdbyschool <- attdbyschoolraw[,1:16]
 names(attdbyschool) <- c(names(attdbyschool)[1],"SchoolDBN",names(attdbyschool)[3:6],"typerolledup", names(attdbyschool)[8:12], "Present", "Absent", "cumP", "cumA")
 attdbyschoolraw <- NULL
@@ -42,11 +42,11 @@ for(variable in names(attdbyschool)[2:10] ){
   attdbyschool[[variable]] <- as.factor(attdbyschool[[variable]])
 }
 
-for(variable in names(attdbyschool)[c(3,4,6,7,8,9,10)] ){
-  print(variable)
-  print(table(attdbyschool[,variable], useNA="always"))
-}
-for(variable in names(attdbyschool)) factor(variable)
+# for(variable in names(attdbyschool)[c(3,4,6,7,8,9,10)] ){
+#   print(variable)
+#   print(table(attdbyschool[,variable], useNA="always"))
+# }
+# for(variable in names(attdbyschool)) factor(variable)
 #pusher2000DL(script = "JP_attd", data= attdbyschool, schema = "attendance", table = "nyc_2010",  type = "create" )
 
 attdbyschool$yr[attdbyschool$yr== "2010-11"]<- "2010"
@@ -221,7 +221,7 @@ create.df.allmonths <- function(df.with.schools){
   df.a <- unique(df.with.schools[, c("SchoolDBN", "CSD", "rankPres")])
   numschools <- length(df.a$SchoolDBN)
   df.a <- df.a[rep(seq_len(nrow(df.a)), 60 - MONTHSTOFORECAST), ] # replicate  max_observations times
-  df.a <- arrange(.data = df.a, SchoolDBN )
+  df.a <- arrange(.data = df.a, SchoolDBN ) # this may not be active but it may not matter anyway TO TEST
   df.a$year <- rep(seq(ARTIFICIALYEAR +1, ARTIFICIALYEAR+60 - MONTHSTOFORECAST), numschools)
   return(df.a)
 }
@@ -257,6 +257,7 @@ yrmax <- max(ts.rate$yr, na.rm=TRUE)
 ts.rate[is.na(ts.rate$yr), ]$yr <- yrmax
 ts.rate$CSD <- sprintf("%02d",ts.rate$CSD)
 ts.rate <- ts.rate[!duplicated(ts.rate),]
+write.csv(ts.rate, file="tostata_toFeb.csv", na="", row.names = FALSE         , quote= FALSE)
 
 
 
@@ -275,9 +276,11 @@ ts.rate <- ts.rate[, ] %>% arrange(CSD, rankPres, year) # bec the format can onl
 ts.rate$CSD <- sprintf("%04d",ts.rate$CSD)
 #ts.rate$rankPres <- sprintf("%03d",ts.rate$rankPres) # for yourprep needs to be %02d
 
+
+
 ts.rate <- ts.rate[!duplicated(ts.rate),]
 
-write.csv(ts.rate, file="tostata.csv", na="", row.names = FALSE         , quote= FALSE)
+# write.csv here
 
 ts.rate <- ts.rate[(ts.rate$CSD=="0001" | ts.rate$CSD=="0002" )& ts.rate$rankPres < "10"  ,]
 # print filesj
