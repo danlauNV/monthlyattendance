@@ -7,7 +7,9 @@ fn.format.date <- function(yr, month) {
 
 # grid expand on all possible month year school combos of forecast
 # possible schools include any with a predict
-SchoolDBN <- unique(ts.lagged[!is.na(ts.lagged$predict), "SchoolDBN"] )
+#SchoolDBN <- unique(ts.lagged[!is.na(ts.lagged$predict), "SchoolDBN"] )
+#holt
+SchoolDBN <- unique()
 month <- seq(10- MONTHSTOFORECAST +1, 11)
 yr <- 2015
 ts.to.tableau <- expand.grid(month = month, yr = yr, SchoolDBN= SchoolDBN)
